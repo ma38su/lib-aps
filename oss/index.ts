@@ -271,10 +271,37 @@ async function deleteObject(token: string, bucketKey: string, objectKey: string)
   }
 }
 
+async function uploadBlobToS3(url: string, formData: any, file: File) {
+  const fd = new FormData();
+  for (const [key, value] of Object.entries(formData)) {
+    fd.set(key, value as string);
+  }
+  fd.set('file', file);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Cache-Control': 'no-cache',
+    },
+    body: fd,
+  });
+  const { status } = res;
+  switch (status) {
+    case 200:
+      break;
+    default:
+      console.error({ res });
+      const msg = await res.json();
+      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  }
+}
+
 export type { IBucket, IObject, PolicyVal };
 export {
   POLICY_LIST,
   castPolicyVal,
+
+  uploadBlobToS3,
 
   getBuckets,
   newBucket,

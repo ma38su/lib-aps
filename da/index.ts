@@ -200,31 +200,6 @@ async function deleteNickname(token: string): Promise<void> {
   }
 }
 
-async function uploadZipToS3(url: string, formData: any, file: File) {
-  const fd = new FormData();
-  for (const [key, value] of Object.entries(formData)) {
-    fd.set(key, value as string);
-  }
-  fd.set('file', file);
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Cache-Control': 'no-cache',
-    },
-    body: fd,
-  });
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
-  }
-}
-
 async function getShares(token: string) {
   const url = `${DA_URL}/shares`;
   const res = await fetch(url, {
@@ -256,8 +231,6 @@ export {
   getEngines as fetchEngines,
   getServiceLimits,
   getShares,
-
-  uploadZipToS3,
 
   pickAppName,
 

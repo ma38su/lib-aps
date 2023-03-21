@@ -6,7 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "publishConfig": {
+    "ma38su:registry": "https://npm.pkg.github.com"
+  },
   "keywords": [],
-  "author": "",
+  "private": true,
+  "author": "ma38su",
   "license": "ISC"
 }

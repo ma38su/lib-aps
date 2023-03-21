@@ -1,4 +1,4 @@
-import { Alias, DA_URL, pickAppName } from ".";
+import { Alias, DA_URL, parseAppName } from ".";
 
 type NewActivityBody = {
   /** Activity Id */

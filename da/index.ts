@@ -19,8 +19,8 @@ interface ForgeConfig {
 
 async function fetchApsConfig(token: string, config: ForgeConfig): Promise<ForgeConfig> {
   const [nickname, engines, appBundles, activities, buckets] = await Promise.all([
-    getNickname(token),
-    getEngines(token),
+    fetchNickname(token),
+    fetchEngines(token),
     getAppBundles(token),
     getActivites(token),
     getBuckets(token),
@@ -37,7 +37,7 @@ async function fetchApsConfig(token: string, config: ForgeConfig): Promise<Forge
   }
 }
 
-async function getNickname(token: string): Promise<string> {
+async function fetchNickname(token: string): Promise<string> {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -63,7 +63,7 @@ async function getNickname(token: string): Promise<string> {
   return nickname;
 }
 
-async function setNickname(token: string, nickname: string): Promise<void> {
+async function patchNickname(token: string, nickname: string): Promise<void> {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -130,7 +130,7 @@ async function getEnginePage(list: string[], token: string, page?: string) {
   return paginationToken;
 }
 
-async function getEngines(token: string) {
+async function fetchEngines(token: string) {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -143,7 +143,7 @@ async function getEngines(token: string) {
   return list;
 }
 
-async function getServiceLimits(token: string) {
+async function fetchServiceLimits(token: string) {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -168,7 +168,7 @@ async function getServiceLimits(token: string) {
   return await res.json() as { frontendLimits: any, backendLimits: any };
 }
 
-function pickAppName(id: string) {
+function parseAppName(id: string) {
   const i = id.indexOf('.');
   const j = id.indexOf('+');
   const name = id.substring(i + 1, j);
@@ -200,7 +200,7 @@ async function deleteNickname(token: string): Promise<void> {
   }
 }
 
-async function getShares(token: string) {
+async function fetchShares(token: string) {
   const url = `${DA_URL}/shares`;
   const res = await fetch(url, {
     method: 'GET',
@@ -222,17 +222,18 @@ async function getShares(token: string) {
 export type {
   Alias,
   ForgeConfig,
-};
+}
+
 export {
-  getNickname as fetchNickname,
-  setNickname,
+  DA_URL,
+
+  fetchNickname,
+  patchNickname,
   deleteNickname,
 
-  getEngines as fetchEngines,
-  getServiceLimits,
-  getShares,
+  fetchEngines,
+  fetchServiceLimits,
+  fetchShares,
 
-  pickAppName,
-
-  DA_URL,
-};
+  parseAppName,
+}

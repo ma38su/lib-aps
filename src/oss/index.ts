@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../dist";
+import { BASE_URL } from "../index";
 
 const OSS_URL = `${BASE_URL}/oss/v2`;
 

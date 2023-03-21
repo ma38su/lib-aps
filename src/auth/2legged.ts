@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../dist";
+import { BASE_URL } from "../index";
 
 async function getAccessToken(clientId: string, clientSecret: string): Promise<string> {
   if (!clientId || !clientSecret) {

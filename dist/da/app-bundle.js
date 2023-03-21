@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAppBundleVersion = exports.deleteAppBundleAlias = exports.deleteAppBundle = exports.newAppBundleAlias = exports.newAppBundleVersion = exports.newAppBundle = exports.getAppBundleDetailsByVersion = exports.getAppBundleDetails2 = exports.getAppBundleDetails = exports.getAppBundleVersions = exports.getAppBundleAliases = exports.getAppBundles = void 0;
-const _1 = require(".");
+import { DA_URL } from "./index";
 function getAppBundlesUrl(page) {
-    const url = `${_1.DA_URL}/appbundles`;
+    const url = `${DA_URL}/appbundles`;
     if (page) {
         return url + `?page=${page}`;
     }
@@ -46,12 +43,11 @@ async function getAppBundles(token) {
     }
     return list;
 }
-exports.getAppBundles = getAppBundles;
 async function getAppBundleDetails(token, id) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${id}`;
+    const url = `${DA_URL}/appbundles/${id}`;
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -82,7 +78,6 @@ async function getAppBundleDetails(token, id) {
         version,
     });
 }
-exports.getAppBundleDetails = getAppBundleDetails;
 async function getAppBundleDetails2(token, id) {
     if (!token) {
         throw new Error("token is required.");
@@ -99,12 +94,11 @@ async function getAppBundleDetails2(token, id) {
     const result = await getAppBundleDetailsByVersion(token, name, version);
     return result;
 }
-exports.getAppBundleDetails2 = getAppBundleDetails2;
 async function getAppBundleDetailsByVersion(token, name, version) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${name}/versions/${version}`;
+    const url = `${DA_URL}/appbundles/${name}/versions/${version}`;
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -129,9 +123,8 @@ async function getAppBundleDetailsByVersion(token, name, version) {
     }
     return result;
 }
-exports.getAppBundleDetailsByVersion = getAppBundleDetailsByVersion;
 function getAppBundleVersionsUrl(name, page) {
-    const url = `${_1.DA_URL}/appbundles/${name}/versions`;
+    const url = `${DA_URL}/appbundles/${name}/versions`;
     if (page) {
         return `${url}?page=${page}`;
     }
@@ -174,9 +167,8 @@ async function getAppBundleVersions(token, name) {
     }
     return list;
 }
-exports.getAppBundleVersions = getAppBundleVersions;
 function getAppBundleAliasUrl(name, page) {
-    const url = `${_1.DA_URL}/appbundles/${name}/aliases`;
+    const url = `${DA_URL}/appbundles/${name}/aliases`;
     if (page) {
         return `${url}?page=${page}`;
     }
@@ -219,7 +211,6 @@ async function getAppBundleAliases(token, name) {
     }
     return list;
 }
-exports.getAppBundleAliases = getAppBundleAliases;
 async function newAppBundle(token, id, engine, description) {
     if (!token) {
         throw new Error("Token is required.");
@@ -230,7 +221,7 @@ async function newAppBundle(token, id, engine, description) {
     if (!engine) {
         throw new Error("Engine is required.");
     }
-    const url = `${_1.DA_URL}/appbundles`;
+    const url = `${DA_URL}/appbundles`;
     const data = {
         id,
         engine,
@@ -257,7 +248,6 @@ async function newAppBundle(token, id, engine, description) {
     const { uploadParameters } = await res.json();
     return uploadParameters;
 }
-exports.newAppBundle = newAppBundle;
 async function newAppBundleVersion(token, appBundleId, engine, description) {
     if (!token) {
         throw new Error("token is required.");
@@ -265,7 +255,7 @@ async function newAppBundleVersion(token, appBundleId, engine, description) {
     if (!appBundleId) {
         throw new Error("AppBundle Id is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${appBundleId}/versions`;
+    const url = `${DA_URL}/appbundles/${appBundleId}/versions`;
     const data = {
         engine,
         description,
@@ -290,7 +280,6 @@ async function newAppBundleVersion(token, appBundleId, engine, description) {
     }
     return await res.json();
 }
-exports.newAppBundleVersion = newAppBundleVersion;
 async function newAppBundleAlias(token, name, version, label) {
     if (!token) {
         throw new Error("token is required.");
@@ -299,7 +288,7 @@ async function newAppBundleAlias(token, name, version, label) {
         version: version,
         id: label,
     };
-    const url = `${_1.DA_URL}/appbundles/${name}/aliases`;
+    const url = `${DA_URL}/appbundles/${name}/aliases`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -319,12 +308,11 @@ async function newAppBundleAlias(token, name, version, label) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.newAppBundleAlias = newAppBundleAlias;
 async function deleteAppBundle(token, name) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${name}`;
+    const url = `${DA_URL}/appbundles/${name}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -342,12 +330,11 @@ async function deleteAppBundle(token, name) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.deleteAppBundle = deleteAppBundle;
 async function deleteAppBundleAlias(token, name, label) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${name}/aliases/${label}`;
+    const url = `${DA_URL}/appbundles/${name}/aliases/${label}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -365,12 +352,11 @@ async function deleteAppBundleAlias(token, name, label) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.deleteAppBundleAlias = deleteAppBundleAlias;
 async function deleteAppBundleVersion(token, name, version) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${_1.DA_URL}/appbundles/${name}/versions/${version}`;
+    const url = `${DA_URL}/appbundles/${name}/versions/${version}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -388,4 +374,4 @@ async function deleteAppBundleVersion(token, name, version) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.deleteAppBundleVersion = deleteAppBundleVersion;
+export { getAppBundles, getAppBundleAliases, getAppBundleVersions, getAppBundleDetails, getAppBundleDetails2, getAppBundleDetailsByVersion, newAppBundle, newAppBundleVersion, newAppBundleAlias, deleteAppBundle, deleteAppBundleAlias, deleteAppBundleVersion, };

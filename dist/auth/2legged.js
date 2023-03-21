@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAccessToken = void 0;
-const dist_1 = require("../../dist");
+import { BASE_URL } from "../index";
 async function getAccessToken(clientId, clientSecret) {
     if (!clientId || !clientSecret) {
         throw new Error("Client Id & Client Secret are required.");
@@ -11,7 +8,7 @@ async function getAccessToken(clientId, clientSecret) {
     params.set('client_secret', clientSecret);
     params.set('grant_type', 'client_credentials');
     params.set('scope', 'code:all data:write data:read bucket:read bucket:create bucket:delete');
-    const url = `${dist_1.BASE_URL}/authentication/v1/authenticate`;
+    const url = `${BASE_URL}/authentication/v1/authenticate`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -32,4 +29,4 @@ async function getAccessToken(clientId, clientSecret) {
     const { access_token: token } = result;
     return token;
 }
-exports.getAccessToken = getAccessToken;
+export { getAccessToken };

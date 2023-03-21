@@ -1,4 +1,4 @@
-import { DA_URL } from ".";
+import { DA_URL } from "./index";
 import { Alias } from "../versions";
 
 function getAppBundlesUrl(page?: string): string {

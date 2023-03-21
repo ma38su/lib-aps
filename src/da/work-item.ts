@@ -1,4 +1,4 @@
-import { DA_URL } from ".";
+import { DA_URL } from "./index";
 
 type WorkItemArguments = {
   [key: string]: WorkItemArgument

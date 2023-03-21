@@ -1,19 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteObject = exports.getObjectDetails = exports.getObjectTemporaryUrl = exports.getObjects = exports.toUrn = exports.deleteBucket = exports.newBucket = exports.getBuckets = exports.uploadBlobToS3 = exports.castPolicyVal = exports.POLICY_LIST = void 0;
-const dist_1 = require("../../dist");
-const OSS_URL = `${dist_1.BASE_URL}/oss/v2`;
+import { BASE_URL } from "../index";
+const OSS_URL = `${BASE_URL}/oss/v2`;
 const POLICY_LIST = [
     'transient', 'temporary', 'persistent'
 ];
-exports.POLICY_LIST = POLICY_LIST;
 function castPolicyVal(val) {
     if (val === 'transient' || val === 'temporary' || val === 'persistent') {
         return val;
     }
     throw new Error(`invalid policy key: ${val}`);
 }
-exports.castPolicyVal = castPolicyVal;
 async function getBuckets(token) {
     if (!token) {
         throw new Error("token is required.");
@@ -45,7 +40,6 @@ async function getBuckets(token) {
         };
     });
 }
-exports.getBuckets = getBuckets;
 async function newBucket(token, bucketKey, policyKey) {
     const data = {
         bucketKey,
@@ -72,7 +66,6 @@ async function newBucket(token, bucketKey, policyKey) {
     }
     return await res.json();
 }
-exports.newBucket = newBucket;
 async function deleteBucket(token, bucketKey) {
     const url = `${OSS_URL}/buckets/${bucketKey}`;
     const res = await fetch(url, {
@@ -91,7 +84,6 @@ async function deleteBucket(token, bucketKey) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.deleteBucket = deleteBucket;
 async function getObjects(token, bucketKey) {
     const url = `${OSS_URL}/buckets/${bucketKey}/objects`;
     const res = await fetch(url, {
@@ -109,7 +101,6 @@ async function getObjects(token, bucketKey) {
     const { items } = await res.json();
     return items;
 }
-exports.getObjects = getObjects;
 async function getObjectDetails(token, bucketKey, objectKey) {
     const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/details`;
     const res = await fetch(url, {
@@ -129,7 +120,6 @@ async function getObjectDetails(token, bucketKey, objectKey) {
     }
     return await res.json();
 }
-exports.getObjectDetails = getObjectDetails;
 function getObjectTemporaryUrlUrl(bucketKey, objectKey, access) {
     const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signed`;
     if (access) {
@@ -157,11 +147,9 @@ async function getObjectTemporaryUrl(token, bucketKey, objectKey, access) {
     }
     return await res.json();
 }
-exports.getObjectTemporaryUrl = getObjectTemporaryUrl;
 function toUrn(bucketKey, objectKey) {
     return `urn:adsk.objects:os.object:${bucketKey}/${objectKey}`;
 }
-exports.toUrn = toUrn;
 async function deleteObject(token, bucketKey, objectKey) {
     if (!token) {
         throw new Error("token is required.");
@@ -183,7 +171,6 @@ async function deleteObject(token, bucketKey, objectKey) {
         throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.deleteObject = deleteObject;
 async function uploadBlobToS3(url, formData, blob) {
     const fd = new FormData();
     for (const [key, value] of Object.entries(formData)) {
@@ -204,4 +191,4 @@ async function uploadBlobToS3(url, formData, blob) {
         throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-exports.uploadBlobToS3 = uploadBlobToS3;
+export { POLICY_LIST, castPolicyVal, uploadBlobToS3, getBuckets, newBucket, deleteBucket, toUrn, getObjects, getObjectTemporaryUrl, getObjectDetails, deleteObject, };

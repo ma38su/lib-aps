@@ -2,9 +2,12 @@
   "name": "lib-aps",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "files": ["dist"],
   "main": "dist/index.js",
-  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
     "tsc": "tsc --watch"
   },

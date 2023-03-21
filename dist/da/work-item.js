@@ -1,15 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isWorkItemArgumentOss = exports.isWorkItemArgumentJson = exports.newWorkItemByWebSocket = exports.waitForWorkItem = exports.newWorkItemBody = exports.newWorkItem = exports.getWorkItem = void 0;
-const _1 = require(".");
+import { DA_URL } from "./index";
 function isWorkItemArgumentJson(arg) {
     return 'json' in arg;
 }
-exports.isWorkItemArgumentJson = isWorkItemArgumentJson;
 function isWorkItemArgumentOss(arg) {
     return 'bucketKey' in arg && 'objectKey' in arg;
 }
-exports.isWorkItemArgumentOss = isWorkItemArgumentOss;
 function extractArguments(args, token) {
     const extracted = {};
     for (const [key, val] of Object.entries(args)) {
@@ -36,7 +31,7 @@ function extractArguments(args, token) {
     return extracted;
 }
 async function getWorkItem(token, id) {
-    const url = `${_1.DA_URL}/workitems/${id}`;
+    const url = `${DA_URL}/workitems/${id}`;
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -55,7 +50,6 @@ async function getWorkItem(token, id) {
     const result = await res.json();
     return result;
 }
-exports.getWorkItem = getWorkItem;
 function newWorkItemBody(token, activityId, args) {
     const data = {
         activityId,
@@ -63,10 +57,9 @@ function newWorkItemBody(token, activityId, args) {
     };
     return data;
 }
-exports.newWorkItemBody = newWorkItemBody;
 async function newWorkItem(token, data) {
     console.log('new-work-item', { data });
-    const url = `${_1.DA_URL}/workitems`;
+    const url = `${DA_URL}/workitems`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -90,7 +83,6 @@ async function newWorkItem(token, data) {
     console.log('newWorkItem', { result });
     return result;
 }
-exports.newWorkItem = newWorkItem;
 async function waitForWorkItem(token, workItemId) {
     const status = await new Promise((resolve) => {
         async function waitWorkItem() {
@@ -107,7 +99,6 @@ async function waitForWorkItem(token, workItemId) {
     });
     return status;
 }
-exports.waitForWorkItem = waitForWorkItem;
 async function newWorkItemByWebSocket(token, data) {
     return new Promise((resolve, reject) => {
         const socket = new WebSocket('wss://websockets.forgedesignautomation.io');
@@ -158,4 +149,4 @@ async function newWorkItemByWebSocket(token, data) {
         });
     });
 }
-exports.newWorkItemByWebSocket = newWorkItemByWebSocket;
+export { getWorkItem, newWorkItem, newWorkItemBody, waitForWorkItem, newWorkItemByWebSocket, isWorkItemArgumentJson, isWorkItemArgumentOss, };

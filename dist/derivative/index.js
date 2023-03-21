@@ -1,5 +1,7 @@
-import { BASE_URL } from "../index";
-const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = require("../index");
+const DERIVATIVE_BASE_URL = `${index_1.BASE_URL}/modelderivative/v2`;
 async function translateToSvf2(token, inputUrn) {
     const url = `${DERIVATIVE_BASE_URL}/designdata/job`;
     const data = {

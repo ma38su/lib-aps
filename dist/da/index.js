@@ -1,6 +1,11 @@
-import { BASE_URL } from "../index";
-const DA_URL = `${BASE_URL}/da/us-east/v3`;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.parseAppName = exports.fetchShares = exports.fetchServiceLimits = exports.fetchEngines = exports.deleteNickname = exports.patchNickname = exports.fetchNickname = exports.DEFAULT_ENGINE = exports.DA_URL = void 0;
+const index_1 = require("../index");
+const DA_URL = `${index_1.BASE_URL}/da/us-east/v3`;
+exports.DA_URL = DA_URL;
 const DEFAULT_ENGINE = 'Autodesk.Revit+2023';
+exports.DEFAULT_ENGINE = DEFAULT_ENGINE;
 async function fetchNickname(token) {
     if (!token) {
         throw new Error("token is required.");
@@ -24,6 +29,7 @@ async function fetchNickname(token) {
     const nickname = await res.json();
     return nickname;
 }
+exports.fetchNickname = fetchNickname;
 async function patchNickname(token, nickname) {
     if (!token) {
         throw new Error("token is required.");
@@ -53,6 +59,7 @@ async function patchNickname(token, nickname) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.patchNickname = patchNickname;
 function getEngineUrl(page) {
     const url = `${DA_URL}/engines`;
     if (page) {
@@ -97,6 +104,7 @@ async function fetchEngines(token) {
     }
     return list;
 }
+exports.fetchEngines = fetchEngines;
 async function fetchServiceLimits(token) {
     if (!token) {
         throw new Error("token is required.");
@@ -119,12 +127,14 @@ async function fetchServiceLimits(token) {
     }
     return await res.json();
 }
+exports.fetchServiceLimits = fetchServiceLimits;
 function parseAppName(id) {
     const i = id.indexOf('.');
     const j = id.indexOf('+');
     const name = id.substring(i + 1, j);
     return name;
 }
+exports.parseAppName = parseAppName;
 async function deleteNickname(token) {
     if (!token) {
         throw new Error("token is required.");
@@ -148,6 +158,7 @@ async function deleteNickname(token) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.deleteNickname = deleteNickname;
 async function fetchShares(token) {
     const url = `${DA_URL}/shares`;
     const res = await fetch(url, {
@@ -166,4 +177,4 @@ async function fetchShares(token) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-export { DA_URL, DEFAULT_ENGINE, fetchNickname, patchNickname, deleteNickname, fetchEngines, fetchServiceLimits, fetchShares, parseAppName, };
+exports.fetchShares = fetchShares;

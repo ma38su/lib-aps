@@ -1,6 +1,9 @@
-import { DA_URL } from "./index";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteActivityAlias = exports.deleteActivityVersion = exports.deleteActivity = exports.newActivityDataForLayoutGenerator = exports.newActivityAlias = exports.newActivityVersion = exports.newActivity = exports.getActivityDetailsByVersion = exports.getActivityDetails = exports.getActivityVersions = exports.getActivityAliases = exports.getActivites = void 0;
+const index_1 = require("./index");
 function getActivitesUrl(page) {
-    const url = `${DA_URL}/activities`;
+    const url = `${index_1.DA_URL}/activities`;
     if (page) {
         return `${url}?page=${page}`;
     }
@@ -43,9 +46,10 @@ async function getActivites(token) {
     }
     return list;
 }
+exports.getActivites = getActivites;
 // alias is required.
 async function getActivityDetails(token, id) {
-    const url = `${DA_URL}/activities/${id}`;
+    const url = `${index_1.DA_URL}/activities/${id}`;
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -64,8 +68,9 @@ async function getActivityDetails(token, id) {
     const result = await res.json();
     console.log('getActivityDetails', { result });
 }
+exports.getActivityDetails = getActivityDetails;
 async function getActivityDetailsByVersion(token, name, version) {
-    const url = `${DA_URL}/activities/${name}/versions/${version}`;
+    const url = `${index_1.DA_URL}/activities/${name}/versions/${version}`;
     const res = await fetch(url, {
         method: 'GET',
         headers: {
@@ -84,8 +89,9 @@ async function getActivityDetailsByVersion(token, name, version) {
     const result = await res.json();
     return result;
 }
+exports.getActivityDetailsByVersion = getActivityDetailsByVersion;
 function getActivityVersionsUrl(name, page) {
-    const url = `${DA_URL}/activities/${name}/versions`;
+    const url = `${index_1.DA_URL}/activities/${name}/versions`;
     if (page) {
         return `${url}?page=${page}`;
     }
@@ -128,8 +134,9 @@ async function getActivityVersions(token, name) {
     }
     return list;
 }
+exports.getActivityVersions = getActivityVersions;
 function getActivityAliasesUrl(name, page) {
-    const url = `${DA_URL}/activities/${name}/aliases`;
+    const url = `${index_1.DA_URL}/activities/${name}/aliases`;
     if (page) {
         return `${url}?page=${page}`;
     }
@@ -172,6 +179,7 @@ async function getActivityAliases(token, name) {
     }
     return list;
 }
+exports.getActivityAliases = getActivityAliases;
 function newActivityDataForLayoutGenerator(activityName, appbundle, engine, command, description) {
     // command = `$(engine.path)\\revitcoreconsole.exe /i "$(args[rvtFile].path)" /al "$(appbundles[${appName}].path)"`;
     const data = {
@@ -217,11 +225,12 @@ function newActivityDataForLayoutGenerator(activityName, appbundle, engine, comm
     };
     return data;
 }
+exports.newActivityDataForLayoutGenerator = newActivityDataForLayoutGenerator;
 async function newActivity(token, data) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${DA_URL}/activities`;
+    const url = `${index_1.DA_URL}/activities`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -241,6 +250,7 @@ async function newActivity(token, data) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.newActivity = newActivity;
 async function newActivityAlias(token, name, version, label) {
     if (!token) {
         throw new Error("token is required.");
@@ -255,7 +265,7 @@ async function newActivityAlias(token, name, version, label) {
         version: version,
         id: label,
     };
-    const url = `${DA_URL}/activities/${name}/aliases`;
+    const url = `${index_1.DA_URL}/activities/${name}/aliases`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -275,11 +285,12 @@ async function newActivityAlias(token, name, version, label) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.newActivityAlias = newActivityAlias;
 async function newActivityVersion(token, activityId, data) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${DA_URL}/activities/${activityId}/versions`;
+    const url = `${index_1.DA_URL}/activities/${activityId}/versions`;
     const res = await fetch(url, {
         method: 'POST',
         headers: {
@@ -300,11 +311,12 @@ async function newActivityVersion(token, activityId, data) {
     }
     return await res.json();
 }
+exports.newActivityVersion = newActivityVersion;
 async function deleteActivity(token, name) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${DA_URL}/activities/${name}`;
+    const url = `${index_1.DA_URL}/activities/${name}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -322,11 +334,12 @@ async function deleteActivity(token, name) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.deleteActivity = deleteActivity;
 async function deleteActivityAlias(token, name, label) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${DA_URL}/activities/${name}/aliases/${label}`;
+    const url = `${index_1.DA_URL}/activities/${name}/aliases/${label}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -344,11 +357,12 @@ async function deleteActivityAlias(token, name, label) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
+exports.deleteActivityAlias = deleteActivityAlias;
 async function deleteActivityVersion(token, name, version) {
     if (!token) {
         throw new Error("token is required.");
     }
-    const url = `${DA_URL}/activities/${name}/versions/${version}`;
+    const url = `${index_1.DA_URL}/activities/${name}/versions/${version}`;
     const res = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -366,4 +380,4 @@ async function deleteActivityVersion(token, name, version) {
             throw new Error(`${status}: ${JSON.stringify(msg)}`);
     }
 }
-export { getActivites, getActivityAliases, getActivityVersions, getActivityDetails, getActivityDetailsByVersion, newActivity, newActivityVersion, newActivityAlias, newActivityDataForLayoutGenerator, deleteActivity, deleteActivityVersion, deleteActivityAlias, };
+exports.deleteActivityVersion = deleteActivityVersion;

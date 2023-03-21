@@ -232,7 +232,14 @@ function toUrn(bucketKey: string, objectKey: string) {
   return `urn:adsk.objects:os.object:${bucketKey}/${objectKey}`;
 }
 
-async function newObject(token: string, bucketKey: string, objectKey: string, file: File) {
+/**
+ * @param token APS 2Legged Access Token
+ * @param bucketKey 
+ * @param objectKey 
+ * @param blob Blob (or File)
+ * @returns 
+ */
+async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob) {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -244,9 +251,9 @@ async function newObject(token: string, bucketKey: string, objectKey: string, fi
       'Authorization': `Bearer ${token}`,
       'accept-encoding': 'gzip, deflate',
       'Content-Type': 'application/octet-stream',
-      'Content-Length': `${file.size}`,
+      'Content-Length': `${blob.size}`,
     },
-    body: file,
+    body: blob,
   });
 
   const { status } = res;

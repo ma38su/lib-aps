@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteObject = exports.getObjectDetails = exports.getObjectTemporaryUrl = exports.getObjects = exports.toUrn = exports.deleteBucket = exports.newBucket = exports.getBuckets = exports.uploadBlobToS3 = exports.castPolicyVal = exports.POLICY_LIST = void 0;
-const __1 = require("..");
-const OSS_URL = `${__1.BASE_URL}/oss/v2`;
+const dist_1 = require("../../dist");
+const OSS_URL = `${dist_1.BASE_URL}/oss/v2`;
 const POLICY_LIST = [
     'transient', 'temporary', 'persistent'
 ];

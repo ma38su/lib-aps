@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseAppName = exports.fetchShares = exports.fetchServiceLimits = exports.fetchEngines = exports.deleteNickname = exports.patchNickname = exports.fetchNickname = exports.DEFAULT_ENGINE = exports.DA_URL = void 0;
-const __1 = require("..");
-const DA_URL = `${__1.BASE_URL}/da/us-east/v3`;
+const dist_1 = require("../../dist");
+const DA_URL = `${dist_1.BASE_URL}/da/us-east/v3`;
 exports.DA_URL = DA_URL;
 const DEFAULT_ENGINE = 'Autodesk.Revit+2023';
 exports.DEFAULT_ENGINE = DEFAULT_ENGINE;

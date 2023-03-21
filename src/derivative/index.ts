@@ -1,4 +1,4 @@
-import { BASE_URL } from ".."
+import { BASE_URL } from "../../dist"
 
 const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
 

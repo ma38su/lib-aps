@@ -1,4 +1,4 @@
-import { BASE_URL } from "..";
+import { BASE_URL } from "../../dist";
 
 const DA_URL = `${BASE_URL}/da/us-east/v3`;
 const DEFAULT_ENGINE = 'Autodesk.Revit+2023';

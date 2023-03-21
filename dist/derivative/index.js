@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const __1 = require("..");
-const DERIVATIVE_BASE_URL = `${__1.BASE_URL}/modelderivative/v2`;
+const dist_1 = require("../../dist");
+const DERIVATIVE_BASE_URL = `${dist_1.BASE_URL}/modelderivative/v2`;
 async function translateToSvf2(token, inputUrn) {
     const url = `${DERIVATIVE_BASE_URL}/designdata/job`;
     const data = {

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.ts",
   "type": "module",
+  "files": ["dist"],
   "scripts": {
     "tsc": "tsc --watch"
   },

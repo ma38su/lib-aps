@@ -8,16 +8,8 @@ const POLICY_LIST: PolicyVal[] = [
   'transient', 'temporary', 'persistent'
 ]
 
-function castPolicyVal(val: string): PolicyVal {
-  if (val === 'transient' || val === 'temporary' || val === 'persistent') {
-    return val;
-  }
-  throw new Error(`invalid policy key: ${val}`)
-}
-
-// default value is 'read'.
+/** default value is 'read'. */
 type AccessVal = 'read' | 'write' | 'readwrite';
-
 
 interface IBucket {
   bucketKey: string,
@@ -39,6 +31,17 @@ interface IObject {
   size: number,
   location: string,
   next: string,
+}
+
+type SignedUrls = {
+  signedUrl: string;
+}
+
+function castPolicyVal(val: string): PolicyVal {
+  if (val === 'transient' || val === 'temporary' || val === 'persistent') {
+    return val;
+  }
+  throw new Error(`invalid policy key: ${val}`)
 }
 
 async function getBuckets(token: string): Promise<IBucket[]> {
@@ -171,17 +174,13 @@ async function getObjectDetails(token: string, bucketKey: string, objectKey: str
   return await res.json();
 }
 
-function getObjectTemporaryUrlUrl(bucketKey: string, objectKey: string, access?: AccessVal) {
+function getObjectTemporaryUrlUrl(bucketKey: string, objectKey: string, access?: AccessVal): string {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signed`;
   if (access) {
     return `${url}?access=${access}`;
   } else {
     return url;
   }
-}
-
-interface SignedUrls {
-  signedUrl: string;
 }
 
 async function getObjectTemporaryUrl(token: string, bucketKey: string, objectKey: string, access?: AccessVal): Promise<SignedUrls> {
@@ -195,19 +194,17 @@ async function getObjectTemporaryUrl(token: string, bucketKey: string, objectKey
     body: JSON.stringify({})
   });
 
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res, url, bucketKey });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res, url, bucketKey });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
+
   return await res.json() as SignedUrls;
 }
 
-function toUrn(bucketKey: string, objectKey: string) {
+function toUrn(bucketKey: string, objectKey: string): string {
   return `urn:adsk.objects:os.object:${bucketKey}/${objectKey}`;
 }
 
@@ -218,7 +215,7 @@ function toUrn(bucketKey: string, objectKey: string) {
  * @param blob Blob (or File)
  * @returns 
  */
-async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob) {
+async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob): Promise<any> {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}`;
   const res = await fetch(url, {
     method: 'PUT',
@@ -231,20 +228,18 @@ async function newObject(token: string, bucketKey: string, objectKey: string, bl
     body: blob,
   });
 
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res, url, bucketKey });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res, url, bucketKey });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
+
   const result = await res.json();
   return result;
 }
 
-async function deleteObject(token: string, bucketKey: string, objectKey: string) {
+async function deleteObject(token: string, bucketKey: string, objectKey: string): Promise<void> {
   if (!token) {
     throw new Error("token is required.");
   }
@@ -260,23 +255,20 @@ async function deleteObject(token: string, bucketKey: string, objectKey: string)
     },
   });
 
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res, url, bucketKey });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res, url, bucketKey });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
 }
 
-async function uploadBlobToS3(url: string, formData: any, file: File) {
+async function uploadBlobToS3(url: string, formData: any, blob: Blob): Promise<void> {
   const fd = new FormData();
   for (const [key, value] of Object.entries(formData)) {
     fd.set(key, value as string);
   }
-  fd.set('file', file);
+  fd.set('file', blob);
 
   const res = await fetch(url, {
     method: 'POST',
@@ -285,18 +277,20 @@ async function uploadBlobToS3(url: string, formData: any, file: File) {
     },
     body: fd,
   });
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
 }
 
-export type { IBucket, IObject, PolicyVal };
+export type {
+  IBucket,
+  IObject,
+  PolicyVal,
+}
+
 export {
   POLICY_LIST,
   castPolicyVal,
@@ -314,4 +308,4 @@ export {
   getObjectDetails,
   newObject,
   deleteObject,
-};
+}

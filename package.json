@@ -2,7 +2,6 @@
   "name": "lib-aps",
   "version": "1.0.0",
   "description": "",
-  "files": ["dist"],
   "scripts": {
     "tsc": "tsc --watch"
   },

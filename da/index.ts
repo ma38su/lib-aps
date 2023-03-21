@@ -1,6 +1,7 @@
 import { BASE_URL } from "..";
 
 const DA_URL = `${BASE_URL}/da/us-east/v3`;
+const DEFAULT_ENGINE = 'Autodesk.Revit+2023';
 
 async function fetchNickname(token: string): Promise<string> {
   if (!token) {
@@ -186,6 +187,7 @@ async function fetchShares(token: string) {
 
 export {
   DA_URL,
+  DEFAULT_ENGINE,
 
   fetchNickname,
   patchNickname,

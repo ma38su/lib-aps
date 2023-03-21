@@ -81,13 +81,6 @@ async function getBuckets(token: string): Promise<IBucket[]> {
 }
 
 async function newBucket(token: string, bucketKey: string, policyKey: PolicyVal): Promise<any> {
-  if (!token) {
-    throw new Error("token is required.");
-  }
-  if (!bucketKey) {
-    throw new Error("bucket key is required.");
-  }
-
   const data = {
     bucketKey,
     access: 'full',
@@ -118,13 +111,6 @@ async function newBucket(token: string, bucketKey: string, policyKey: PolicyVal)
 }
 
 async function deleteBucket(token: string, bucketKey: string): Promise<void> {
-  if (!token) {
-    throw new Error("token is required.");
-  }
-  if (!bucketKey) {
-    throw new Error("bucket key is required.");
-  }
-
   const url = `${OSS_URL}/buckets/${bucketKey}`;
   const res = await fetch(url, {
     method: 'DELETE',
@@ -145,13 +131,6 @@ async function deleteBucket(token: string, bucketKey: string): Promise<void> {
 }
 
 async function getObjects(token: string, bucketKey: string): Promise<IObject[]> {
-  if (!token) {
-    throw new Error("token is required.");
-  }
-  if (!bucketKey) {
-    throw new Error("bucket key is required.");
-  }
-
   const url = `${OSS_URL}/buckets/${bucketKey}/objects`;
   const res = await fetch(url, {
     method: 'GET',
@@ -240,10 +219,6 @@ function toUrn(bucketKey: string, objectKey: string) {
  * @returns 
  */
 async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob) {
-  if (!token) {
-    throw new Error("token is required.");
-  }
-
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}`;
   const res = await fetch(url, {
     method: 'PUT',

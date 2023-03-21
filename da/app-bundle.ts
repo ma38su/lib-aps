@@ -1,4 +1,5 @@
-import { Alias, DA_URL } from ".";
+import { DA_URL } from ".";
+import { Alias } from "../versions";
 
 function getAppBundlesUrl(page?: string): string {
   const url = `${DA_URL}/appbundles`;

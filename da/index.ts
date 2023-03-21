@@ -1,41 +1,6 @@
 import { BASE_URL } from "..";
-import { getActivites } from "./activity";
-import { getAppBundles } from "./app-bundle";
-import { WorkItemEntry } from "./work-item";
-import { getBuckets, IBucket } from "../oss";
-import { Alias } from "../versions";
 
 const DA_URL = `${BASE_URL}/da/us-east/v3`;
-
-interface ForgeConfig {
-  token: string,
-  appBundles: string[],
-  activities: string[],
-  workItems: WorkItemEntry[],
-  nickname: string,
-  engines: string[],
-  buckets: IBucket[],
-};
-
-async function fetchApsConfig(token: string, config: ForgeConfig): Promise<ForgeConfig> {
-  const [nickname, engines, appBundles, activities, buckets] = await Promise.all([
-    fetchNickname(token),
-    fetchEngines(token),
-    getAppBundles(token),
-    getActivites(token),
-    getBuckets(token),
-  ]);
-
-  return {
-    ...config,
-    token,
-    nickname,
-    engines,
-    appBundles,
-    activities,
-    buckets,
-  }
-}
 
 async function fetchNickname(token: string): Promise<string> {
   if (!token) {
@@ -217,11 +182,6 @@ async function fetchShares(token: string) {
       const msg = await res.json();
       throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
-}
-
-export type {
-  Alias,
-  ForgeConfig,
 }
 
 export {

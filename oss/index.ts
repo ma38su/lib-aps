@@ -11,19 +11,19 @@ const POLICY_LIST: PolicyVal[] = [
 /** default value is 'read'. */
 type AccessVal = 'read' | 'write' | 'readwrite';
 
-interface IBucket {
+type IBucket = {
   bucketKey: string,
   createdDate: Date,
   policyKey: string,
 }
 
-interface BucketRaw {
+type BucketRaw = {
   bucketKey: string,
   createdDate: number,
   policyKey: string,
 }
 
-interface IObject {
+type IObject = {
   bucketKey: string,
   objectId: string, // URN
   objectKey: string,
@@ -208,37 +208,6 @@ function toUrn(bucketKey: string, objectKey: string): string {
   return `urn:adsk.objects:os.object:${bucketKey}/${objectKey}`;
 }
 
-/**
- * @param token APS 2Legged Access Token
- * @param bucketKey 
- * @param objectKey 
- * @param blob Blob (or File)
- * @returns 
- */
-async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob): Promise<any> {
-  const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}`;
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/octet-stream',
-      'Content-Length': `${blob.size}`,
-    },
-    body: blob,
-  });
-
-  if (!res.ok) {
-    const { status } = res;
-    console.error({ res, url, bucketKey });
-    const msg = await res.json();
-    throw new Error(`${status}: ${JSON.stringify(msg)}`);
-  }
-
-  const result = await res.json();
-  return result;
-}
-
 async function deleteObject(token: string, bucketKey: string, objectKey: string): Promise<void> {
   if (!token) {
     throw new Error("token is required.");
@@ -306,6 +275,5 @@ export {
   getObjects,
   getObjectTemporaryUrl,
   getObjectDetails,
-  newObject,
   deleteObject,
 }

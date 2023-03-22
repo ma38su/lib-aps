@@ -191,12 +191,12 @@ async function newObject(token: string, bucketKey: string, objectKey: string, bl
 
   const [ signedUrl ] = urls;
   await uploadToSignedS3Url(signedUrl, blob);
-  return await completeUploadObject(bucketKey, objectKey, uploadKey);
+  return await completeUploadObject(token, bucketKey, objectKey, uploadKey);
 }
 
 async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey: string, parts?: number): Promise<ResponseSignedS3UploadUrl> {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signeds3upload${parts != null ? `?parts=${parts}` : ''}`;
-
+  console.log('getSignedS3UploadUrl', {url});
   const res = await fetch(url, {
     method: 'GET',
     headers: {

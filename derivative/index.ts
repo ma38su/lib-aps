@@ -2,13 +2,13 @@ import { BASE_URL } from "../index"
 
 const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
 
-async function translateToSvf2(token: string, inputUrn: string) {
+async function translateZipToSvf2(token: string, inputUrn: string, rootFilename: string) {
   const url = `${DERIVATIVE_BASE_URL}/designdata/job`
 
   const data = {
     input: {
       urn: inputUrn,
-      rootFilename: "Tuner.iam",
+      rootFilename: rootFilename,
       compressedUrn: true
     },
     output: {
@@ -18,12 +18,18 @@ async function translateToSvf2(token: string, inputUrn: string) {
     },
     formats: [
       {
-        type: 'stl',
-        advanced: {
-          format : 'binary',
-          exportColor: true,
-          exportFileStructure: 'single',
-        }
+        type: 'svf',
+        views: [
+          "2d",
+          "3d"
+        ]
+      },
+      {
+        type: 'svf2',
+        views: [
+          "2d",
+          "3d"
+        ]
       }
     ],
   };
@@ -37,3 +43,15 @@ async function translateToSvf2(token: string, inputUrn: string) {
     body: JSON.stringify(data),
   })
 }
+
+async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
+  const url = `${DERIVATIVE_BASE_URL}/designdata/${urlSafeUrnOfSourceFile}/manifest`;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export { translateZipToSvf2, fetchManifest }

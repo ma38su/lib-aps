@@ -162,7 +162,17 @@ async function getObjects(token: string, bucketKey: string): Promise<IObject[]> 
   return items as IObject[];
 }
 
-async function getObjectDetails(token: string, bucketKey: string, objectKey: string): Promise<any> {
+type ResponseObjectDetails = {
+  bucketKey: string,
+  contentType: string,
+  location: string,
+  objectId: string, // urn
+  objectKey: string, // file name
+  sha1: string,
+  size: number,
+}
+
+async function getObjectDetails(token: string, bucketKey: string, objectKey: string): Promise<ResponseObjectDetails> {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/details`;
   const res = await fetch(url, {
     method: 'GET',

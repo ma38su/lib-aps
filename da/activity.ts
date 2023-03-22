@@ -418,8 +418,6 @@ export {
   newActivityVersion,
   newActivityAlias,
 
-  newActivityDataForLayoutGenerator,
-
   deleteActivity,
   deleteActivityVersion,
   deleteActivityAlias,

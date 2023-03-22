@@ -200,12 +200,12 @@ async function newObject(token: string, bucketKey: string, objectKey: string, bl
 
   const [ signedUrl ] = urls;
   await uploadToSignedS3Url(signedUrl, blob);
+
   return await completeUploadObject(token, bucketKey, objectKey, uploadKey);
 }
 
 async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey: string, parts?: number): Promise<ResponseSignedS3UploadUrl> {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signeds3upload${parts != null ? `?parts=${parts}` : ''}`;
-  console.log('getSignedS3UploadUrl', {url});
   const res = await fetch(url, {
     method: 'GET',
     headers: {
@@ -213,17 +213,13 @@ async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey:
       'Content-Type': 'application/json',
     },
   });
-
   if (!res.ok) {
     const { status } = res;
     console.error({ res, url, bucketKey });
     const msg = await res.json();
     throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
-
-  const data = await res.json() as ResponseSignedS3UploadUrl;
-  console.log('getSignedS3UploadUrl', {data});
-  return data;
+  return await res.json() as ResponseSignedS3UploadUrl;
 }
 
 async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void> {
@@ -241,7 +237,6 @@ async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void>
     const msg = await res.json();
     throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
-  console.log('uploaded');
 }
 
 async function completeUploadObject(token: string, bucketKey: string, objectKey: string, uploadKey: string): Promise<ResponseUploadObject> {

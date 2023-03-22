@@ -234,53 +234,6 @@ async function getActivityAliases(token: string, name: string): Promise<Alias[]>
   return list;
 }
 
-function newActivityDataForLayoutGenerator(activityName: string | null, appbundle: string, engine: string, command: string, description: string): NewActivityBody {
-  // command = `$(engine.path)\\revitcoreconsole.exe /i "$(args[rvtFile].path)" /al "$(appbundles[${appName}].path)"`;
-
-  const data = {
-    id: activityName,
-    commandLine: [command],
-    engine,
-    appbundles: [appbundle],
-    description,
-    parameters: {
-      rvtFile: {
-        zip: false,
-        ondemand: false,
-        verb: 'get',
-        description: 'Input Revit template model',
-        required: true,
-        localName: "$(rvtFile)",
-      },
-      unitFile: {
-        zip: false,
-        ondemand: false,
-        verb: 'get',
-        description: 'Input Revit unit model',
-        required: true,
-        localName: "unit.rvt",
-      },
-      jsonFile: {
-        zip: false,
-        ondemand: false,
-        verb: 'get',
-        description: 'Input Json',
-        required: true,
-        localName: "layout.json",
-      },
-      result: {
-        zip: true,
-        ondemand: false,
-        verb: 'put',
-        description: 'Results',
-        required: true,
-        localName: 'output',
-      },
-    },
-  } satisfies NewActivityBody
-  return data;
-}
-
 async function newActivity(token: string, data: NewActivityBody): Promise<void> {
   if (!token) {
     throw new Error("token is required.");

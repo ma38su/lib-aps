@@ -212,7 +212,9 @@ async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey:
     throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
 
-  return await res.json() as ResponseSignedS3UploadUrl;
+  const data = await res.json() as ResponseSignedS3UploadUrl;
+  console.log('getSignedS3UploadUrl', {data});
+  return data;
 }
 
 async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void> {
@@ -230,6 +232,7 @@ async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void>
     const msg = await res.json();
     throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
+  console.log('uploaded');
 }
 
 type ResponseUploadObject = {
@@ -350,8 +353,6 @@ export {
   deleteBucket,
 
   newObject,
-  getSignedS3UploadUrl,
-  uploadToSignedS3Url,
 
   getObjects,
   getObjectTemporaryUrl,

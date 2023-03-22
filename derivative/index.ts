@@ -3,7 +3,7 @@ import { BASE_URL } from "../index"
 const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
 
 function encodeUrlSafeBase64(str: string) {
-  const base64 = btoa(str); // Base64エンコード
+  const base64 = Buffer.from(str).toString('base64'); // Base64エンコード
   const base64Url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''); // URL SafeなBase64に変換
   return base64Url;
 }
@@ -39,6 +39,7 @@ async function translateZipToSvf2(token: string, inputUrn: string, rootFilename:
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
+      'x-ads-force': 'true',
     },
     body: JSON.stringify(data),
   });
@@ -60,4 +61,4 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
   });
 }
 
-export { translateZipToSvf2, fetchManifest }
+export { translateZipToSvf2, fetchManifest, encodeUrlSafeBase64 }

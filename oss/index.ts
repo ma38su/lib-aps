@@ -174,17 +174,94 @@ async function getObjectDetails(token: string, bucketKey: string, objectKey: str
   return await res.json();
 }
 
-function getObjectTemporaryUrlUrl(bucketKey: string, objectKey: string, access?: AccessVal): string {
-  const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signed`;
-  if (access) {
-    return `${url}?access=${access}`;
-  } else {
-    return url;
+type ResponseSignedS3UploadUrl = {
+  uploadKey: string,
+  uploadExpiration: string, // DateTime?
+  urlExpiration: string,  // DateTime?
+  urls: string[],
+}
+
+async function newObject(token: string, bucketKey: string, objectKey: string, blob: Blob): Promise<ResponseUploadObject> {
+  const {
+    uploadKey,
+    urls,
+  } = await getSignedS3UploadUrl(token, bucketKey, objectKey);
+
+  if (urls.length !== 1) throw new Error();
+
+  const [ signedUrl ] = urls;
+  await uploadToSignedS3Url(signedUrl, blob);
+  return await completeUploadObject(bucketKey, objectKey, uploadKey);
+}
+
+async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey: string, parts?: number): Promise<ResponseSignedS3UploadUrl> {
+  const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signeds3upload${parts != null ? `?parts=${parts}` : ''}`;
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res, url, bucketKey });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  }
+
+  return await res.json() as ResponseSignedS3UploadUrl;
+}
+
+async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void> {
+  const res = await fetch(signedUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/octet-stream',
+      'Content-Length': blob.size.toString(),
+    },
+    body: blob,
+  });
+  if (!res.ok) {
+    const { status } = res;
+    console.error('upload To signed URL', { res });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
 }
 
+type ResponseUploadObject = {
+  bucketKey: string,
+  objectId: string,
+  objectKey: string,
+  sha1: string,
+  size: number,
+  location: string,
+};
+
+async function completeUploadObject(bucketKey: string, objectKey: string, uploadKey: string): Promise<ResponseUploadObject> {
+  const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signeds3upload`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer eYeL5gYxAT2j3u9TEerxoJoToNbi',
+      'Content-Type': 'application/json',
+      'x-ads-meta-Content-Type': 'application/octet-stream',
+    },
+    body: JSON.stringify({uploadKey}),
+  });
+  if (!res.ok) {
+    const { status } = res;
+    throw new Error(`status: ${status}`);
+  }
+  return await res.json();
+}
+
 async function getObjectTemporaryUrl(token: string, bucketKey: string, objectKey: string, access?: AccessVal): Promise<SignedUrls> {
-  const url = getObjectTemporaryUrlUrl(bucketKey, objectKey, access);
+  const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signed${access != null ? `?access=${access}` : ''}`;
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -263,6 +340,11 @@ export type {
 export {
   POLICY_LIST,
   castPolicyVal,
+
+  newObject,
+
+  getSignedS3UploadUrl,
+  uploadToSignedS3Url,
 
   uploadBlobToS3,
 

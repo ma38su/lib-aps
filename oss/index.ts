@@ -37,6 +37,15 @@ type SignedUrls = {
   signedUrl: string;
 }
 
+type ResponseUploadObject = {
+  bucketKey: string,
+  objectId: string,
+  objectKey: string,
+  sha1: string,
+  size: number,
+  location: string,
+}
+
 function castPolicyVal(val: string): PolicyVal {
   if (val === 'transient' || val === 'temporary' || val === 'persistent') {
     return val;
@@ -200,7 +209,7 @@ async function getSignedS3UploadUrl(token: string, bucketKey: string, objectKey:
   const res = await fetch(url, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
   });
@@ -235,21 +244,12 @@ async function uploadToSignedS3Url(signedUrl: string, blob: Blob): Promise<void>
   console.log('uploaded');
 }
 
-type ResponseUploadObject = {
-  bucketKey: string,
-  objectId: string,
-  objectKey: string,
-  sha1: string,
-  size: number,
-  location: string,
-};
-
-async function completeUploadObject(bucketKey: string, objectKey: string, uploadKey: string): Promise<ResponseUploadObject> {
+async function completeUploadObject(token: string, bucketKey: string, objectKey: string, uploadKey: string): Promise<ResponseUploadObject> {
   const url = `${OSS_URL}/buckets/${bucketKey}/objects/${objectKey}/signeds3upload`;
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer eYeL5gYxAT2j3u9TEerxoJoToNbi',
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       'x-ads-meta-Content-Type': 'application/octet-stream',
     },

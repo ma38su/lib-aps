@@ -258,7 +258,12 @@ async function completeUploadObject(token: string, bucketKey: string, objectKey:
       'Content-Type': 'application/json',
       'x-ads-meta-Content-Type': 'application/octet-stream',
     },
-    body: JSON.stringify({uploadKey}),
+    body: JSON.stringify({
+      uploadKey,
+      ossbucketKey: bucketKey,
+      ossSourceFileObjectKey: objectKey,
+      access: "full",
+    }),
   });
   if (!res.ok) {
     const { status } = res;

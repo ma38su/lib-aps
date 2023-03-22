@@ -341,18 +341,17 @@ export {
   POLICY_LIST,
   castPolicyVal,
 
-  newObject,
-
-  getSignedS3UploadUrl,
-  uploadToSignedS3Url,
-
   uploadBlobToS3,
+
+  toUrn,
 
   getBuckets,
   newBucket,
   deleteBucket,
 
-  toUrn,
+  newObject,
+  getSignedS3UploadUrl,
+  uploadToSignedS3Url,
 
   getObjects,
   getObjectTemporaryUrl,

@@ -46,6 +46,16 @@ type ResponseUploadObject = {
   location: string,
 }
 
+type ResponseObjectDetails = {
+  bucketKey: string,
+  contentType: string,
+  location: string,
+  objectId: string, // urn
+  objectKey: string, // file name
+  sha1: string,
+  size: number,
+}
+
 function castPolicyVal(val: string): PolicyVal {
   if (val === 'transient' || val === 'temporary' || val === 'persistent') {
     return val;
@@ -160,16 +170,6 @@ async function getObjects(token: string, bucketKey: string): Promise<IObject[]> 
 
   const { items } = await res.json();
   return items as IObject[];
-}
-
-type ResponseObjectDetails = {
-  bucketKey: string,
-  contentType: string,
-  location: string,
-  objectId: string, // urn
-  objectKey: string, // file name
-  sha1: string,
-  size: number,
 }
 
 async function getObjectDetails(token: string, bucketKey: string, objectKey: string): Promise<ResponseObjectDetails> {

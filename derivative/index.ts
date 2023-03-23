@@ -16,9 +16,6 @@ async function translateToSvf2(token: string, inputUrn: string) {
       urn: inputUrn,
     },
     output: {
-      destination: {
-        region: 'us'
-      },
       formats: [
         {
           type: 'svf2',
@@ -59,9 +56,6 @@ async function translateZipToSvf2(token: string, inputUrn: string, rootFilename:
       compressedUrn: true
     },
     output: {
-      destination: {
-        region: 'us'
-      },
       formats: [
         {
           type: 'svf2',

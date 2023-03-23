@@ -8,14 +8,12 @@ function encodeUrlSafeBase64(str: string) {
   return base64Url;
 }
 
-async function translateZipToSvf2(token: string, inputUrn: string, rootFilename: string) {
+async function translateToSvf2(token: string, inputUrn: string) {
   const url = `${DERIVATIVE_BASE_URL}/designdata/job`
 
   const data = {
     input: {
       urn: inputUrn,
-      rootFilename: rootFilename,
-      compressedUrn: true
     },
     output: {
       destination: {
@@ -51,12 +49,14 @@ async function translateZipToSvf2(token: string, inputUrn: string, rootFilename:
   console.log({json});
 }
 
-async function translateToSvf2(token: string, inputUrn: string) {
+async function translateZipToSvf2(token: string, inputUrn: string, rootFilename: string) {
   const url = `${DERIVATIVE_BASE_URL}/designdata/job`
 
   const data = {
     input: {
       urn: inputUrn,
+      rootFilename: rootFilename,
+      compressedUrn: true
     },
     output: {
       destination: {
@@ -102,4 +102,9 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
   });
 }
 
-export { translateZipToSvf2, translateToSvf2, fetchManifest, encodeUrlSafeBase64 }
+export {
+  encodeUrlSafeBase64,
+  translateToSvf2,
+  translateZipToSvf2,
+  fetchManifest,
+}

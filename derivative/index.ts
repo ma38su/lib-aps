@@ -19,16 +19,16 @@ async function translateToSvf2(token: string, inputUrn: string) {
       destination: {
         region: 'us'
       },
+      formats: [
+        {
+          type: 'svf2',
+          views: [
+            "2d",
+            "3d"
+          ]
+        }
+      ],
     },
-    formats: [
-      {
-        type: 'svf2',
-        views: [
-          "2d",
-          "3d"
-        ]
-      }
-    ],
   };
 
   console.log('job post', {data});
@@ -62,16 +62,16 @@ async function translateZipToSvf2(token: string, inputUrn: string, rootFilename:
       destination: {
         region: 'us'
       },
+      formats: [
+        {
+          type: 'svf2',
+          views: [
+            "2d",
+            "3d"
+          ]
+        }
+      ],
     },
-    formats: [
-      {
-        type: 'svf2',
-        views: [
-          "2d",
-          "3d"
-        ]
-      }
-    ],
   };
 
   console.log('job post', {data});

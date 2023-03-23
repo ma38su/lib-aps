@@ -94,6 +94,7 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
       Authorization: `Bearer ${token}`,
     },
   });
+  return res;
 }
 
 export {

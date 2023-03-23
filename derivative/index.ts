@@ -51,6 +51,47 @@ async function translateZipToSvf2(token: string, inputUrn: string, rootFilename:
   console.log({json});
 }
 
+async function translateToSvf2(token: string, inputUrn: string) {
+  const url = `${DERIVATIVE_BASE_URL}/designdata/job`
+
+  const data = {
+    input: {
+      urn: inputUrn,
+    },
+    output: {
+      destination: {
+        region: 'us'
+      },
+    },
+    formats: [
+      {
+        type: 'svf2',
+        views: [
+          "2d",
+          "3d"
+        ]
+      }
+    ],
+  };
+
+  console.log('job post', {data});
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'x-ads-force': 'true',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const { status} = res;
+    throw new Error(`status: ${status}`);
+  }
+  const json = await res.json();
+  console.log({json});
+}
+
 async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
   const url = `${DERIVATIVE_BASE_URL}/designdata/${urlSafeUrnOfSourceFile}/manifest`;
   const res = await fetch(url, {
@@ -61,4 +102,4 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
   });
 }
 
-export { translateZipToSvf2, fetchManifest, encodeUrlSafeBase64 }
+export { translateZipToSvf2, translateToSvf2, fetchManifest, encodeUrlSafeBase64 }

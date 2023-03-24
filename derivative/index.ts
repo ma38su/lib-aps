@@ -1,4 +1,5 @@
 import { BASE_URL } from "../index"
+import { sleep } from "../test";
 
 const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
 
@@ -46,6 +47,8 @@ type TranslateJobRequestBody = {
   misc?: any,
 }
 
+type JobStatus = 'pending' | 'success' | 'inprogress' | 'failed' | 'timeout';
+
 type ResponseManifest = {
   urn: string,
   hasThumbnail: 'false' | 'true' | boolean,
@@ -57,7 +60,7 @@ type ResponseManifest = {
     name: string,
     hasThumbnail: boolean,
     outputType: 'dwg' | 'fbx' | 'ifc' | 'iges' | 'obj' | 'step' | 'stl' | 'svf' | 'svf2' | 'thumbnail',
-    status: 'pending' | 'inprogress' | 'success' | 'failed' | 'timeout'
+    status: JobStatus,
     progress: string,
     children: {
       guid: string,
@@ -67,7 +70,7 @@ type ResponseManifest = {
       mime: string,
     }[],
   }[],
-  status: 'pending' | 'success' | 'inprogress' | 'failed' | 'timeout',
+  status: JobStatus,
 }
 
 async function translate(token: string, job: TranslateJobRequestBody): Promise<ResponseTranslate> {
@@ -121,9 +124,22 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string): Pro
   return await res.json();
 }
 
+async function waitForTranslate(token: string, urn: string): Promise<'success' | 'failed' | 'timeout'> {
+  while (true) {
+    const manifest = await fetchManifest(token, urn);
+    const { status, progress } = manifest;
+    console.debug({status, progress});
+    if (status !== 'inprogress' && status !== 'pending') {
+      return status;
+    }
+    await sleep(15000);
+  }
+}
+
 export {
   encodeUrlSafeBase64,
   translate,
   translateToSvf2,
   fetchManifest,
+  waitForTranslate,
 }

@@ -6,7 +6,7 @@ import { getAccessToken } from '../auth/2legged';
 import { sleep } from '../test';
 
 import * as fs from 'fs';
-import { encodeUrlSafeBase64, fetchManifest, translateToSvf2 } from '../derivative';
+import { encodeUrlSafeBase64, fetchManifest, translateToSvf2, waitForTranslate } from '../derivative';
 
 describe('OSS', async () => {
   dotenv.config();
@@ -86,16 +86,8 @@ describe('OSS', async () => {
         throw res;
       }
 
-      while (true) {
-        const manifest = await fetchManifest(token, urn);
-        const { status, progress } = manifest;
-        console.log({ status, progress });
-        if (status === 'inprogress' || status === 'pending') {
-          await sleep(10_000);
-          continue;
-        }
-        break;
-      }
+      const status = await waitForTranslate(token, urn);
+      expect(status).toBe('success');
 
     } catch (e: unknown) {
       const { status } = e as any;

@@ -1,6 +1,6 @@
 {
   "name": "lib-aps",
-  "version": "1.0.0",
+  "version": "v0.34.13",
   "description": "",
   "scripts": {
     "test": "vitest",

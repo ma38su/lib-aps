@@ -3,12 +3,6 @@ import { sleep } from "../test";
 
 const DERIVATIVE_BASE_URL = `${BASE_URL}/modelderivative/v2`;
 
-function encodeUrlSafeBase64(str: string) {
-  const base64 = Buffer.from(str).toString('base64'); // Base64エンコード
-  const base64Url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''); // URL SafeなBase64に変換
-  return base64Url;
-}
-
 type ResponseTranslate = {
   result: 'success' | 'created' | string,
   urn: string,
@@ -71,6 +65,12 @@ type ResponseManifest = {
     }[],
   }[],
   status: JobStatus,
+}
+
+function encodeUrlSafeBase64(str: string) {
+  const base64 = Buffer.from(str).toString('base64'); // Base64エンコード
+  const base64Url = base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, ''); // URL SafeなBase64に変換
+  return base64Url;
 }
 
 async function translate(token: string, job: TranslateJobRequestBody): Promise<ResponseTranslate> {

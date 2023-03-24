@@ -21,14 +21,11 @@ async function getAccessToken(clientId: string, clientSecret: string): Promise<s
     body: params,
   });
 
-  const { status } = res;
-  switch (status) {
-    case 200:
-      break;
-    default:
-      console.error({ res });
-      const msg = await res.json();
-      throw new Error(`${status}: ${JSON.stringify(msg)}`);
+  if (!res.ok) {
+    const { status } = res;
+    console.error({ res });
+    const msg = await res.json();
+    throw new Error(`${status}: ${JSON.stringify(msg)}`);
   }
 
   const result = await res.json();

@@ -8,13 +8,94 @@ function encodeUrlSafeBase64(str: string) {
   return base64Url;
 }
 
-async function translateToSvf2(token: string, inputUrn: string) {
+type ResponseTranslate = {
+  result: 'success' | 'created' | string,
+  urn: string,
+  acceptedJobs: {
+    output: TranslateOutput,
+  }[],
+};
+
+type TranslateInput = TranslateInputCompressed | TranslateInputNoCompressed;
+
+type TranslateInputNoCompressed = {
+  urn: string,
+  compressedUrn?: false,
+}
+
+type TranslateInputCompressed = {
+  urn: string,
+  rootFilename: string,
+  compressedUrn: true,
+}
+
+type TranslateOutput = {
+  destination?: {
+    region: 'us' | 'emea' | 'US' | 'EMEA',
+  },
+  formats: {
+    type: 'dwg' | 'fbx' | 'ifc' | 'iges' | 'obj' | 'step' | 'stl' | 'svf' | 'svf2' | 'thumbnail'
+    views: ('2d' | '3d')[],
+    advanced?: any,
+  }[],
+}
+
+type TranslateJobRequestBody = {
+  input: TranslateInput,
+  output: TranslateOutput,
+  misc?: any,
+}
+
+type ResponseManifest = {
+  urn: string,
+  hasThumbnail: 'false' | 'true' | boolean,
+  progress: 'complate' | string, // '(\d)+% complete',
+  type: 'manifest' | string,
+  region: 'US' | 'EMEA' | 'us' | 'emea',
+  version: '1.0' | string,
+  derivatives: {
+    name: string,
+    hasThumbnail: boolean,
+    outputType: 'dwg' | 'fbx' | 'ifc' | 'iges' | 'obj' | 'step' | 'stl' | 'svf' | 'svf2' | 'thumbnail',
+    status: 'pending' | 'inprogress' | 'success' | 'failed' | 'timeout'
+    progress: string,
+    children: {
+      guid: string,
+      role: string,
+      type?: string,
+      urn: string,
+      mime: string,
+    }[],
+  }[],
+  status: 'pending' | 'success' | 'inprogress' | 'failed' | 'timeout',
+}
+
+async function translate(token: string, job: TranslateJobRequestBody): Promise<ResponseTranslate> {
   const url = `${DERIVATIVE_BASE_URL}/designdata/job`
 
-  const data = {
-    input: {
-      urn: inputUrn,
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'x-ads-force': 'true',
     },
+    body: JSON.stringify(job),
+  });
+  if (!res.ok) {
+    const { status } = res;
+    if (status === 400) {
+      const { diagnostic } = await res.json();
+      console.error('translateZipToSvf2', { status, diagnostic});
+    }
+    throw res;
+  }
+  return await res.json();
+}
+
+async function translateToSvf2(token: string, input: TranslateInput): Promise<ResponseTranslate> {
+  return await translate(token, {
+    input,
     output: {
       formats: [
         {
@@ -26,67 +107,10 @@ async function translateToSvf2(token: string, inputUrn: string) {
         }
       ],
     },
-  };
-
-  console.log('job post', {data});
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'x-ads-force': 'true',
-    },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const { status} = res;
-    throw new Error(`status: ${status}`);
-  }
-  const json = await res.json();
-  console.log({json});
+  } satisfies TranslateJobRequestBody);
 }
 
-async function translateZipToSvf2(token: string, inputUrn: string, rootFilename: string) {
-  const url = `${DERIVATIVE_BASE_URL}/designdata/job`
-
-  const data = {
-    input: {
-      urn: inputUrn,
-      rootFilename: rootFilename,
-      compressedUrn: true
-    },
-    output: {
-      formats: [
-        {
-          type: 'svf2',
-          views: [
-            "2d",
-            "3d"
-          ]
-        }
-      ],
-    },
-  };
-
-  console.log('job post', {data});
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'x-ads-force': 'true',
-    },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const { status} = res;
-    throw new Error(`status: ${status}`);
-  }
-  const json = await res.json();
-  console.log({json});
-}
-
-async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
+async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string): Promise<ResponseManifest> {
   const url = `${DERIVATIVE_BASE_URL}/designdata/${urlSafeUrnOfSourceFile}/manifest`;
   const res = await fetch(url, {
     method: 'GET',
@@ -99,7 +123,7 @@ async function fetchManifest(token: string, urlSafeUrnOfSourceFile: string) {
 
 export {
   encodeUrlSafeBase64,
+  translate,
   translateToSvf2,
-  translateZipToSvf2,
   fetchManifest,
 }

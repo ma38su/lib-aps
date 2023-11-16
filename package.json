@@ -13,10 +13,10 @@
   "author": "ma38su",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.15.5",
-    "@vitest/coverage-istanbul": "^0.29.7",
-    "dotenv": "^16.0.3",
-    "typescript": "^5.0.2",
-    "vitest": "^0.29.7"
+    "@types/node": "^20.9.0",
+    "@vitest/coverage-istanbul": "^0.34.6",
+    "dotenv": "^16.3.1",
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   }
 }
